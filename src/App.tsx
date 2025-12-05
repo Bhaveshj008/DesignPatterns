@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Server, Database, Globe, Cpu, Layers, Copy, Puzzle, 
   Shield, LayoutTemplate, ShieldCheck, Activity, GitBranch, 
   Terminal, Wifi, RotateCcw, CheckCircle, 
-  ArrowRight, Box, Lock, Radio, HardDrive,
+  ArrowRight, Box, Lock, HardDrive,
   FileJson, FileCode, Zap, Smartphone, ArrowDown, Monitor,
   SkipBack, CreditCard, RefreshCw,
   AlertTriangle, Check, X, MousePointerClick, ExternalLink,
@@ -378,7 +378,7 @@ const BuilderSim = () => {
 
 const PrototypeSim = () => {
   const [vms, setVms] = useState([{ id: 1, name: 'Ubuntu_Base_Img', type: 'template' }]);
-  const clone = (id: number) => setVms(p => [...p, { id: Date.now(), name: `Clone_${Math.floor(Math.random()*999)}`, type: 'clone' }]);
+  const clone = () => setVms(p => [...p, { id: Date.now(), name: `Clone_${Math.floor(Math.random()*999)}`, type: 'clone' }]);
   return (
     <div className="flex flex-col p-6 bg-slate-900 min-h-[450px] relative">
       <div className="absolute top-2 left-1/2 -translate-x-1/2 text-[10px] text-blue-300 font-mono animate-hint flex items-center gap-1">
@@ -399,7 +399,7 @@ const PrototypeSim = () => {
                  <div className="h-1 w-1/2 bg-slate-600 rounded"></div>
               </div>
               {vm.type === 'template' && (
-                <button onClick={() => clone(vm.id)} className="mt-auto w-full py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold rounded flex items-center justify-center gap-1 transition-colors">
+                <button onClick={() => clone()} className="mt-auto w-full py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-bold rounded flex items-center justify-center gap-1 transition-colors">
                   <Copy size={12}/> Instant Clone
                 </button>
               )}
@@ -1371,7 +1371,7 @@ export default function DesignPatternEncyclopedia() {
       )}
 
       {/* DESKTOP SIDEBAR NAVIGATION */}
-      <div className="w-80 bg-slate-900 border-r border-slate-800 flex flex-col z-20 hidden md:flex shadow-2xl">
+      <div className="w-80 bg-slate-900 border-r border-slate-800 flex-col z-20 hidden md:flex shadow-2xl">
         <div className="p-4 border-b border-slate-800 ">
            <div className="flex items-center gap-2 text-blue-500 mb-1">
              <Layers className="text-blue-400" size={20} />
