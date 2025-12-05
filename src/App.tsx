@@ -225,9 +225,9 @@ const PATTERNS = {
 // ============================================================================
 
 const SingletonSim = () => {
-  const [instanceId, setInstanceId] = useState(null);
-  const [requests, setRequests] = useState([]);
-  const handleRequest = (clientId) => {
+  const [instanceId, setInstanceId] = useState<string | null>(null);
+  const [requests, setRequests] = useState<Array<{ id: number; clientId: number; poolId: string; isNew: boolean }>>([]);
+  const handleRequest = (clientId: number) => {
     let currentId = instanceId;
     let isNew = false;
     if (!currentId) {
@@ -279,8 +279,8 @@ const SingletonSim = () => {
 };
 
 const FactorySim = () => {
-  const [created, setCreated] = useState([]);
-  const create = (type) => setCreated(p => [{ id: Date.now(), type }, ...p].slice(0,5));
+  const [created, setCreated] = useState<Array<{ id: number; type: string }>>([]);
+  const create = (type: string) => setCreated(p => [{ id: Date.now(), type }, ...p].slice(0,5));
   return (
     <div className="flex flex-col md:flex-row items-center justify-center gap-8 p-6 min-h-[450px] relative">
       <div className="absolute top-2 left-1/2 -translate-x-1/2 text-[10px] text-blue-300 font-mono animate-hint flex items-center gap-1">
@@ -318,16 +318,16 @@ const FactorySim = () => {
 };
 
 const BuilderSim = () => {
-  const [specs, setSpecs] = useState({ cpu: '', ram: '', disk: '' });
+  const [specs, setSpecs] = useState<{ cpu: string; ram: string; disk: string }>({ cpu: '', ram: '', disk: '' });
   return (
     <div className="flex flex-col md:flex-row gap-8 p-6 min-h-[450px] items-center relative">
       <div className="absolute top-2 left-1/2 -translate-x-1/2 text-[10px] text-blue-300 font-mono animate-hint flex items-center gap-1">
         <MousePointerClick size={12} /> Select components to assemble server
       </div>
       <div className="w-full md:w-1/3 space-y-4">
-        {[{ type: 'cpu', label: 'CPU', opts: ['4-Core', '8-Core'], color: 'blue' },
-          { type: 'ram', label: 'RAM', opts: ['16GB', '32GB'], color: 'purple' },
-          { type: 'disk', label: 'Disk', opts: ['512GB', '1TB'], color: 'green' }
+        {[{ type: 'cpu' as const, label: 'CPU', opts: ['4-Core', '8-Core'], color: 'blue' },
+          { type: 'ram' as const, label: 'RAM', opts: ['16GB', '32GB'], color: 'purple' },
+          { type: 'disk' as const, label: 'Disk', opts: ['512GB', '1TB'], color: 'green' }
         ].map(cat => (
           <div key={cat.type} className="bg-slate-800 p-4 rounded-lg border border-slate-700">
             <div className="text-xs font-bold text-slate-400 uppercase mb-3">{cat.label}</div>
@@ -378,7 +378,7 @@ const BuilderSim = () => {
 
 const PrototypeSim = () => {
   const [vms, setVms] = useState([{ id: 1, name: 'Ubuntu_Base_Img', type: 'template' }]);
-  const clone = (id) => setVms(p => [...p, { id: Date.now(), name: `Clone_${Math.floor(Math.random()*999)}`, type: 'clone' }]);
+  const clone = (id: number) => setVms(p => [...p, { id: Date.now(), name: `Clone_${Math.floor(Math.random()*999)}`, type: 'clone' }]);
   return (
     <div className="flex flex-col p-6 bg-slate-900 min-h-[450px] relative">
       <div className="absolute top-2 left-1/2 -translate-x-1/2 text-[10px] text-blue-300 font-mono animate-hint flex items-center gap-1">
@@ -505,9 +505,9 @@ const DecoratorSim = () => {
 };
 
 const FacadeSim = () => {
-  const [logs, setLogs] = useState([]);
+  const [logs, setLogs] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
-  const addLog = (msg) => setLogs(p => [...p, msg]);
+  const addLog = (msg: string) => setLogs(p => [...p, msg]);
   const run = async () => {
     setBusy(true);
     setLogs([]);
@@ -550,8 +550,8 @@ const FacadeSim = () => {
 
 const ProxySim = () => {
   const [blocked, setBlocked] = useState(false);
-  const [reqs, setReqs] = useState([]);
-  const [timestamps, setTimestamps] = useState([]);
+  const [reqs, setReqs] = useState<Array<{ id: number; status: string }>>([]);
+  const [timestamps, setTimestamps] = useState<number[]>([]);
   const send = () => {
     const now = Date.now();
     const recent = timestamps.filter(t => now - t < 2000);
@@ -645,8 +645,8 @@ const ObserverSim = () => {
 
 const CommandSim = () => {
   const [balance, setBalance] = useState(1000);
-  const [history, setHistory] = useState([]);
-  const exec = (amount) => {
+  const [history, setHistory] = useState<Array<{ op: string; val: number }>>([]);
+  const exec = (amount: number) => {
     setBalance(p => p + amount);
     setHistory(p => [...p, { op: amount > 0 ? 'Deposit' : 'Withdraw', val: amount }]);
   };
@@ -694,7 +694,7 @@ const CommandSim = () => {
 const StateSim = () => {
   const [state, setState] = useState('CLOSED');
   useEffect(() => {
-    let t;
+    let t: number | undefined;
     if(state === 'SYN_SENT') t = setTimeout(() => setState('ESTABLISHED'), 1500);
     return () => clearTimeout(t);
   }, [state]);
@@ -775,7 +775,7 @@ const BridgeSim = () => {
   const [dbType, setDbType] = useState('SQL'); // 'SQL' or 'Mongo'
   const [query, setQuery] = useState('');
    
-  const saveUser = (name) => {
+  const saveUser = (name: any) => {
      if(dbType === 'SQL') {
        setQuery(`INSERT INTO users (name) VALUES ('${name}');`);
      } else {
@@ -795,7 +795,7 @@ const BridgeSim = () => {
             <span className="text-[10px] uppercase font-bold text-slate-500">User Repository</span>
             <div className="flex flex-col gap-2">
                <input type="text" placeholder="New User Name" className="bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white" id="userNameInput" />
-               <button onClick={() => saveUser(document.getElementById('userNameInput').value || 'Alice')} className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2 rounded">
+               <button onClick={() => saveUser((document.getElementById('userNameInput') as HTMLInputElement)?.value || 'Alice')} className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2 rounded">
                   repo.saveUser()
                </button>
             </div>
@@ -825,8 +825,8 @@ const BridgeSim = () => {
 }
 
 const CompositeSim = () => {
-  const [expanded, setExpanded] = useState({ root: true, music: true });
-  const toggle = (k) => setExpanded(p => ({...p, [k]: !p[k]}));
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({ root: true, music: true });
+  const toggle = (k: string) => setExpanded(p => ({...p, [k]: !p[k]}));
    
   return (
     <div className="flex flex-col items-center justify-center gap-8 p-6 min-h-[450px] relative">
@@ -930,10 +930,10 @@ const FlyweightSim = () => {
 }
 
 const ChainSim = () => {
-  const [log, setLog] = useState([]);
-  const handle = (level) => {
+  const [log, setLog] = useState<Array<{ agent: string; status: string }>>([]);
+  const handle = (level: number) => {
     setLog([]);
-    const steps = [];
+    const steps: Array<{ agent: string; status: string }> = [];
     steps.push({ agent: 'Bot', status: level === 1 ? 'SOLVED' : 'PASSED' });
     if (level > 1) steps.push({ agent: 'Junior', status: level === 2 ? 'SOLVED' : 'PASSED' });
     if (level > 2) steps.push({ agent: 'Senior', status: 'SOLVED' });
@@ -1007,8 +1007,8 @@ const IteratorSim = () => {
 }
 
 const MediatorSim = () => {
-  const [msgs, setMsgs] = useState([]);
-  const send = (user, text) => {
+  const [msgs, setMsgs] = useState<Array<{ user: string; text: string; id: number }>>([]);
+  const send = (user: string, text: string) => {
     setMsgs(p => [...p, { user, text, id: Date.now() }].slice(-4));
   }
 
@@ -1057,10 +1057,10 @@ const MediatorSim = () => {
 
 const MementoSim = () => {
   const [text, setText] = useState("Version 1");
-  const [saves, setSaves] = useState([]);
+  const [saves, setSaves] = useState<string[]>([]);
    
   const save = () => setSaves(p => [...p, text]);
-  const restore = (val) => setText(val);
+  const restore = (val: React.SetStateAction<string>) => setText(val);
 
   return (
     <div className="flex flex-col items-center justify-center gap-8 p-6 min-h-[450px] relative">
@@ -1093,11 +1093,11 @@ const MementoSim = () => {
 
 // --- NEW TEMPLATE METHOD SIMULATION: CI/CD PIPELINE ---
 const TemplateSim = () => {
-  const [logs, setLogs] = useState([]);
+  const [logs, setLogs] = useState<string[]>([]);
   const [type, setType] = useState('Node'); // Node or Java
   const [running, setRunning] = useState(false);
 
-  const addLog = (msg) => setLogs(p => [...p, msg]);
+  const addLog = (msg: string) => setLogs(p => [...p, msg]);
 
   const runPipeline = async () => {
     if(running) return;
@@ -1286,7 +1286,7 @@ const VisitorSim = () => {
 // --- MAIN LAYOUT COMPONENT ---
 // ============================================================================
 export default function DesignPatternEncyclopedia() {
-  const [active, setActive] = useState('singleton');
+  const [active, setActive] = useState<keyof typeof PATTERNS>('singleton');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   // State for collapsible categories - initialized to true (open) for discovery
@@ -1296,7 +1296,7 @@ export default function DesignPatternEncyclopedia() {
     Behavioral: true
   });
 
-  const toggleCat = (cat) => {
+  const toggleCat = (cat: 'Creational' | 'Structural' | 'Behavioral') => {
     setExpandedCats(prev => ({...prev, [cat]: !prev[cat]}));
   };
 
@@ -1338,8 +1338,8 @@ export default function DesignPatternEncyclopedia() {
                 </button>
              </div>
              
-             <div className="flex-1 overflow-y-auto custom-scroll p-4 space-y-6">
-               {['Creational', 'Structural', 'Behavioral'].map(cat => (
+            <div className="flex-1 overflow-y-auto custom-scroll p-4 space-y-6">
+              {(['Creational', 'Structural', 'Behavioral'] as const).map(cat => (
                  <div key={cat}>
                    <button 
                      onClick={() => toggleCat(cat)}
@@ -1354,7 +1354,7 @@ export default function DesignPatternEncyclopedia() {
                        {Object.entries(PATTERNS).filter(([_, p]) => p.category === cat).map(([key, p]) => (
                           <button
                             key={key}
-                            onClick={() => { setActive(key); setIsSidebarOpen(false); }}
+                            onClick={() => { setActive(key as keyof typeof PATTERNS); setIsSidebarOpen(false); }}
                             className={`w-full text-left px-3 py-2.5 text-xs font-bold flex items-center gap-3 transition-all duration-200 ${active === key ? 'bg-slate-800 rounded-lg text-white shadow-md border-l-4 ' + (cat === 'Creational' ? 'border-blue-500' : cat === 'Structural' ? 'border-purple-500' : 'border-green-500') : 'text-slate-400 bg-transparent hover:text-slate-200 hover:bg-slate-800/50 rounded-lg'}`}
                           >
                             <p.icon size={16} className={active === key ? (cat === 'Creational' ? 'text-blue-400' : cat === 'Structural' ? 'text-purple-400' : 'text-green-400') : 'text-slate-600'} />
@@ -1380,7 +1380,7 @@ export default function DesignPatternEncyclopedia() {
         </div>
         
         <div className="flex-1 overflow-y-auto custom-scroll p-4 space-y-6">
-          {['Creational', 'Structural', 'Behavioral'].map(cat => (
+          {(['Creational', 'Structural', 'Behavioral'] as const).map(cat => (
              <div key={cat}>
                <button 
                  onClick={() => toggleCat(cat)}
@@ -1395,7 +1395,7 @@ export default function DesignPatternEncyclopedia() {
                    {Object.entries(PATTERNS).filter(([_, p]) => p.category === cat).map(([key, p]) => (
                       <button
                         key={key}
-                        onClick={() => setActive(key)}
+                        onClick={() => setActive(key as keyof typeof PATTERNS)}
                         className={`w-full text-left px-3 py-2 text-lg font-bold flex items-center gap-3 transition-all duration-200 ${active === key ? 'bg-slate-800 rounded-lg text-white shadow-md border-l-4 ' + (cat === 'Creational' ? 'border-blue-500' : cat === 'Structural' ? 'border-purple-500' : 'border-green-500') : 'text-slate-400 bg-transparent hover:text-slate-200 hover:bg-slate-800/50 rounded-lg'}`}
                       >
                         <p.icon size={16} className={active === key ? (cat === 'Creational' ? 'text-blue-400' : cat === 'Structural' ? 'text-purple-400' : 'text-green-400') : 'text-slate-600'} />
